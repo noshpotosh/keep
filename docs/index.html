@@ -1,0 +1,603 @@
+<title>keeb build book</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: datasheet-style build book. Sticky section index on the left, one reading column, drawings at true scale. */
+:root {
+  --paper: #f5f6f3;
+  --sheet: #ffffff;
+  --ink: #1b2124;
+  --muted: #5d676b;
+  --rule: #d7dcd8;
+  --gold: #a87a1f;          /* ENIG pad gold */
+  --gold-soft: #f1e6cc;
+  --mask: #2f5d50;          /* solder-mask green, used sparingly */
+  --mask-soft: #dfeae5;
+  --warn: #9a4a1c;
+  --warn-soft: #f6e4d8;
+  --key: #e9ece8;
+  --key-edge: #b9c0bb;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #111618; --sheet: #182023; --ink: #e4e8e5; --muted: #98a3a2; --rule: #2c373a;
+    --gold: #d9ad55; --gold-soft: #3a3020; --mask: #7fbfa8; --mask-soft: #1e3330;
+    --warn: #e59a6b; --warn-soft: #3a2619; --key: #253033; --key-edge: #3f4c4f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #111618; --sheet: #182023; --ink: #e4e8e5; --muted: #98a3a2; --rule: #2c373a;
+  --gold: #d9ad55; --gold-soft: #3a3020; --mask: #7fbfa8; --mask-soft: #1e3330;
+  --warn: #e59a6b; --warn-soft: #3a2619; --key: #253033; --key-edge: #3f4c4f;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink);
+  font: 16px/1.6 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--mask); text-underline-offset: 2px; }
+a:hover { color: var(--gold); }
+a:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 2px; }
+code, .mono { font-family: var(--mono); font-size: .86em; }
+code { background: var(--key); padding: .08em .35em; border-radius: 3px; }
+
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 56px; padding-block: 48px 96px; }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 32px); align-self: start; font-size: 14px; }
+nav.toc .label { font: 600 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+nav.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; counter-reset: s -1; }
+nav.toc li { counter-increment: s; }
+nav.toc a { display: flex; gap: 10px; padding: 4px 0; color: var(--ink); text-decoration: none; }
+nav.toc a::before { content: counter(s, decimal-leading-zero); font: 12px/1.9 var(--mono); color: var(--muted); }
+nav.toc a.extra::before { content: "—"; }
+nav.toc a:hover { color: var(--gold); }
+
+main { min-width: 0; display: grid; gap: 72px; }
+header.hero { display: grid; gap: 20px; padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+h1 { font: 800 clamp(40px, 6vw, 64px)/1 var(--display); font-stretch: 78%; letter-spacing: -.01em; margin: 0; text-wrap: balance; }
+.lede { font-size: 18px; color: var(--muted); max-width: 62ch; margin: 0; }
+h2 { font: 750 30px/1.15 var(--display); font-stretch: 85%; margin: 0; text-wrap: balance; display: flex; gap: 14px; align-items: baseline; }
+h2 .n { font: 500 14px/1 var(--mono); color: var(--gold); }
+h3 { font: 600 17px/1.3 var(--body); margin: 0; }
+section { display: grid; gap: 20px; scroll-margin-top: 24px; }
+section > p, .prose p, li { max-width: 68ch; }
+p { margin: 0; }
+ul, ol.steps { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+.specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.spec { background: var(--sheet); padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.spec .k { font: 500 11px/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.spec .v { font-weight: 600; }
+
+.figure { background: var(--sheet); border: 1px solid var(--rule); padding: 20px; display: grid; gap: 12px; }
+.figure .cap { font-size: 13px; color: var(--muted); }
+.scroll { overflow-x: auto; }
+svg text { font-family: var(--mono); fill: var(--muted); }
+
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font: 600 11px/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); background: var(--sheet); }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tbl { overflow-x: auto; border: 1px solid var(--rule); background: var(--sheet); }
+.tbl table td:first-child { font-weight: 500; }
+tr.pick td { background: var(--mask-soft); }
+
+.note { border-left: 3px solid var(--warn); background: var(--warn-soft); padding: 14px 16px; display: grid; gap: 6px; }
+.note.ok { border-color: var(--mask); background: var(--mask-soft); }
+.note b { font-weight: 600; }
+
+.phases { list-style: none; padding: 0; margin: 0; display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.phases li { background: var(--sheet); max-width: none; }
+.phases label { display: grid; grid-template-columns: auto auto 1fr; gap: 14px; align-items: center; padding: 12px 16px; cursor: pointer; }
+.phases input { width: 18px; height: 18px; accent-color: var(--mask); margin: 0; }
+.phases .n { font: 13px var(--mono); color: var(--gold); }
+.phases .t a { color: var(--ink); text-decoration: none; font-weight: 500; }
+.phases .t a:hover { color: var(--gold); }
+.phases .t small { display: block; color: var(--muted); font-size: 13px; }
+.phases input:checked ~ .t a { text-decoration: line-through; color: var(--muted); }
+
+.todo { list-style: none; padding: 0; display: grid; gap: 8px; }
+.todo li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; }
+.todo li::before { content: ""; width: 14px; height: 14px; border: 1.5px solid var(--gold); border-radius: 3px; margin-top: 5px; }
+.tag { font: 500 11px/1 var(--mono); padding: 3px 6px; border-radius: 3px; background: var(--gold-soft); color: var(--gold); white-space: nowrap; }
+
+.stack { display: grid; gap: 6px; }
+.stack .row { display: grid; grid-template-columns: 150px minmax(0, 1fr) 64px; gap: 12px; align-items: center; font-size: 14px; }
+.stack .bar { height: 22px; border-radius: 2px; }
+.stack .mm { font: 13px var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+.stack .total { border-top: 1px solid var(--rule); padding-top: 8px; font-weight: 600; }
+
+.cols2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+.cols2 > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+
+pre { margin: 0; background: var(--sheet); border: 1px solid var(--rule); padding: 14px 16px; overflow-x: auto; font: 13px/1.6 var(--mono); }
+
+footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 20px; }
+
+@media (max-width: 820px) {
+  .wrap { grid-template-columns: minmax(0, 1fr); gap: 32px; padding-block: 28px 64px; }
+  nav.toc { position: static; }
+  nav.toc ol { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .stack .row { grid-template-columns: 110px minmax(0, 1fr) 54px; }
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Sections">
+    <div class="label">Build book</div>
+    <ol>
+      <li><a class="extra" href="#overview">Overview</a></li>
+      <li><a href="#requirements">Requirements</a></li>
+      <li><a href="#layout">Layout &amp; matrix</a></li>
+      <li><a href="#pcb">PCB design</a></li>
+      <li><a href="#firmware">Firmware</a></li>
+      <li><a href="#case">Case</a></li>
+      <li><a href="#assembly">Assembly</a></li>
+      <li><a class="extra" href="#bom">Parts list</a></li>
+      <li><a class="extra" href="#resources">Resources</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="hero" id="overview">
+      <div class="eyebrow">36 keys · PG1316S · XIAO nRF52840 · ZMK</div>
+      <h1>An ultra-thin wireless split, two clean rectangles</h1>
+      <p class="lede">A pocketable 36-key keyboard with no row or column stagger. It uses Kailh PG1316S laptop-style butterfly switches, a 1 mm PCB and a 3D-printed tray. The target is 7 mm or less from desk to keycap.</p>
+
+      <div class="specs">
+        <div class="spec"><span class="k">Keys</span><span class="v">36 (18 per half)</span></div>
+        <div class="spec"><span class="k">Layout</span><span class="v">Ortholinear 5×4 grid</span></div>
+        <div class="spec"><span class="k">Switch</span><span class="v">Kailh PG1316S, SMD</span></div>
+        <div class="spec"><span class="k">Controller</span><span class="v">XIAO nRF52840 ×2</span></div>
+        <div class="spec"><span class="k">Firmware</span><span class="v">ZMK, split BLE</span></div>
+        <div class="spec"><span class="k">Battery</span><span class="v">Thin LiPo pouch</span></div>
+        <div class="spec"><span class="k">PCB</span><span class="v">1.0 mm FR4, 2-layer</span></div>
+        <div class="spec"><span class="k">Target height</span><span class="v">≤ 7 mm</span></div>
+      </div>
+
+      <div class="figure">
+        <div class="scroll">
+          <svg id="board" viewBox="-6 -10 197 92" width="100%" style="min-width:520px" role="img" aria-label="Top view of both halves at 16.5 mm pitch"></svg>
+        </div>
+        <div class="cap">Top view drawn to scale at 16.5 mm pitch (provisional). The XIAO, shown in gold, fills the two empty outer slots of the thumb row.</div>
+      </div>
+
+      <h3>Build phases</h3>
+      <ul class="phases">
+        <li><label><input type="checkbox" id="ph0"><span class="n">00</span><span class="t"><a href="#requirements">Lock requirements</a><small>Resolve the open questions</small></span></label></li>
+        <li><label><input type="checkbox" id="ph1"><span class="n">01</span><span class="t"><a href="#layout">Layout &amp; matrix</a><small>Pitch, grid, GPIO map</small></span></label></li>
+        <li><label><input type="checkbox" id="ph2"><span class="n">02</span><span class="t"><a href="#pcb">PCB design</a><small>Ergogen → KiCad → JLCPCB</small></span></label></li>
+        <li><label><input type="checkbox" id="ph3"><span class="n">03</span><span class="t"><a href="#firmware">Firmware</a><small>ZMK shield. Can run in parallel with the PCB</small></span></label></li>
+        <li><label><input type="checkbox" id="ph4"><span class="n">04</span><span class="t"><a href="#case">Case</a><small>Parametric, 3D printed</small></span></label></li>
+        <li><label><input type="checkbox" id="ph5"><span class="n">05</span><span class="t"><a href="#assembly">Assembly &amp; test</a><small>Solder, test, close up</small></span></label></li>
+      </ul>
+    </header>
+
+    <!-- 00 -->
+    <section id="requirements">
+      <h2><span class="n">00</span>Requirements &amp; decisions</h2>
+      <ul>
+        <li><b>Thin and portable.</b> 7 mm or less, including keycaps and case. The closest prior build, <a href="https://github.com/vuoz/chalk">vuoz/chalk</a>, reaches about 6 mm.</li>
+        <li><b>Pure ortholinear.</b> No row stagger and no column stagger. Each half is a clean rectangle.</li>
+        <li><b>Wireless split</b> with long standby and a rechargeable battery.</li>
+        <li><b>36 keys.</b> 3×5 alphas plus 3 thumb keys per half.</li>
+      </ul>
+
+      <div class="tbl"><table>
+        <thead><tr><th>Area</th><th>Decision</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Switch</td><td>Kailh PG1316S</td><td>The lowest-profile keyboard switch available (1.8 mm)</td></tr>
+          <tr><td>Controller</td><td>Seeed XIAO nRF52840</td><td>Small (21 × 17.8 mm), cheap, has a built-in LiPo charger, works with ZMK, proven with PG1316S in chalk</td></tr>
+          <tr><td>Firmware</td><td>ZMK</td><td>The standard for wireless splits</td></tr>
+          <tr><td>Thumbs</td><td>4th row, inner 3 columns</td><td>Keeps the grid ortholinear. The 2 empty outer slots hold the XIAO</td></tr>
+          <tr><td>Case</td><td>3D printed</td><td>Cheap and quick to iterate</td></tr>
+          <tr><td>PCB thickness</td><td>1.0 mm (0.8 mm stretch goal)</td><td>Thinner than the standard 1.6 mm. Chalk proved 1.0 mm works</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>PG1316S switch, from the Kailh datasheet</h3>
+      <div class="specs">
+        <div class="spec"><span class="k">Body</span><span class="v mono">13.50 × 13.00 mm</span></div>
+        <div class="spec"><span class="k">Height</span><span class="v mono">1.80 ± 0.2 mm</span></div>
+        <div class="spec"><span class="k">Total travel</span><span class="v mono">1.8 ± 0.2 mm</span></div>
+        <div class="spec"><span class="k">Contact at</span><span class="v mono">1.0 ± 0.3 mm</span></div>
+        <div class="spec"><span class="k">Operating force</span><span class="v mono">25 ± 10 gf</span></div>
+        <div class="spec"><span class="k">Tactile peak</span><span class="v mono">35 ± 10 gf</span></div>
+        <div class="spec"><span class="k">Land pattern</span><span class="v mono">14.70 × 14.00 mm</span></div>
+        <div class="spec"><span class="k">Contact pads</span><span class="v mono">2 × 1.55 mm, 5.80 c–c</span></div>
+        <div class="spec"><span class="k">Locating holes</span><span class="v mono">Ø1.20, Ø1.00 NPTH</span></div>
+        <div class="spec"><span class="k">Hand solder</span><span class="v mono">≤ 280 °C, ≤ 3 s</span></div>
+        <div class="spec"><span class="k">Life</span><span class="v mono">20 M cycles</span></div>
+      </div>
+      <div class="note"><b>Buy spares.</b> <p>The switch is surface-mount and very hard to remove once soldered. Buy at least 10 to 15% extra.</p></div>
+
+      <h3 id="battery">Battery</h3>
+      <p>You asked for a thin, watch-style rechargeable cell. Here are the options:</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Option</th><th>Thickness</th><th>Capacity</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td>LIR2032 coin cell</td><td class="num">3.2 mm</td><td class="num">~40 mAh</td><td>Not recommended. Its max charge current is about 20 mA, and the XIAO charges at 50 mA or more.</td></tr>
+          <tr><td>LIR2450 coin cell</td><td class="num">5.0 mm</td><td class="num">~120 mAh</td><td>Too thick for the target.</td></tr>
+          <tr class="pick"><td>Thin LiPo pouch (smartwatch style)</td><td class="num">2–3 mm</td><td class="num">100–300 mAh</td><td><b>Recommended.</b> For example 301230 (~100 mAh), 302030 (~150 mAh) or 402030 (~200 mAh, 4 mm).</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li>The pouch code reads thickness / width / length, so <code>301230</code> is 3.0 × 12 × 30 mm.</li>
+        <li>Choose a cell with a protection PCB and bare leads or a JST-SH connector.</li>
+        <li>The XIAO charges at 50 mA by default (P0.13 left floating) or 100 mA (P0.13 driven LOW). Keep 50 mA for cells under 100 mAh.</li>
+        <li>Expected life with ZMK: the central half draws about 0.3–1 mA on average while in use. A 150 mAh cell lasts roughly 2–6 weeks on the central half and months on the other half. Sleep settings matter more than capacity.</li>
+      </ul>
+
+      <h3>Height budget</h3>
+      <div class="figure">
+        <div class="stack" id="stack"></div>
+        <div class="cap">Bar lengths are to scale, using the middle of each range. The XIAO's height above the PCB must be measured. If it stands taller than switch plus keycap, drop it into a PCB cutout.</div>
+      </div>
+
+      <h3>Open questions (resolve before routing)</h3>
+      <ul class="todo">
+        <li><span><b>Key pitch.</b> Provisional 16.5 × 16.5 mm. The minimum is 14.7 mm, set by the land pattern. Confirm against the Kailh 1U keycap datasheet; chalk used about 16 × 16 mm caps.</span></li>
+        <li><span><b>Battery model.</b> Choose a specific pouch cell and record its exact L × W × T.</span></li>
+        <li><span><b>XIAO mounting height.</b> Surface-mount on the castellations or sit it in a PCB cutout. Measure the real part.</span></li>
+        <li><span><b>Keycaps.</b> Stock Kailh PG1316S caps, or thinner custom 3D-printed caps.</span></li>
+        <li><span><b>Solder method.</b> Pads only (hot plate and paste), or through-holes under the pads so you can solder from the back with an iron.</span></li>
+        <li><span><b>PCB strategy.</b> One reversible PCB, or separate left and right PCBs.</span></li>
+      </ul>
+    </section>
+
+    <!-- 01 -->
+    <section id="layout">
+      <h2><span class="n">01</span>Layout &amp; matrix</h2>
+      <p>Each half is 5 columns × 4 rows on a uniform pitch. Keys only, that is 82.5 × 66 mm at 16.5 mm pitch. With about 1.5 mm of case wall on each side, a half comes to roughly <b>86 × 69 mm</b>.</p>
+      <p>The XIAO slot is 33 × 16.5 mm and the XIAO is 21 × 17.8 mm, so it fits lengthwise with about 0.65 mm of overhang above and below. The USB-C port faces the outer side edge. Check this in the KiCad 3D viewer.</p>
+
+      <div class="cols2">
+        <div>
+          <h3>Matrix</h3>
+          <ul>
+            <li>A 5-column × 4-row diode matrix with 18 switches per half.</li>
+            <li>That uses <b>9 GPIO</b>. The XIAO has 11 (D0–D10), which leaves 2 spare.</li>
+            <li>Diode direction is col2row, the ZMK default.</li>
+            <li>Use 1N4148W diodes (SOD-123) on the back. Use SOD-323 if they sit over the battery pocket.</li>
+            <li>Don't use the NFC pins (P0.09 / P0.10) unless NFC is disabled.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Provisional GPIO map (left half)</h3>
+          <div class="tbl"><table>
+            <thead><tr><th>Signal</th><th>XIAO pin</th></tr></thead>
+            <tbody>
+              <tr><td>COL0–COL4</td><td class="mono">D0 D1 D2 D3 D4</td></tr>
+              <tr><td>ROW0–ROW3</td><td class="mono">D5 D6 D7 D8</td></tr>
+              <tr><td>Spare</td><td class="mono">D9 D10</td></tr>
+              <tr><td>Battery sense</td><td>Internal (P0.31 / P0.14)</td></tr>
+            </tbody>
+          </table></div>
+          <p class="cap" style="font-size:13px;color:var(--muted)">The right half mirrors the columns. Finalize the map while routing.</p>
+        </div>
+      </div>
+
+      <h3>Other parts per half</h3>
+      <ul>
+        <li><b>Power switch.</b> A small side-actuated slide switch (for example MSK-12C02) in series with BAT+, placed on the outer edge next to USB-C.</li>
+        <li><b>Reset button.</b> Optional, since the XIAO has one. Add one if the XIAO will be enclosed.</li>
+        <li><b>Battery pads.</b> BAT+ and BAT− run to the XIAO's back-side pads through the power switch.</li>
+      </ul>
+    </section>
+
+    <!-- 02 -->
+    <section id="pcb">
+      <h2><span class="n">02</span>PCB design</h2>
+      <p>Ergogen generates the key grid, the outlines and a placed but unrouted KiCad board from a YAML file. KiCad handles routing, design-rule checks and export. JLCPCB (or PCBWay) makes the boards.</p>
+
+      <h3>Footprints</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Part</th><th>Source</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>PG1316S switch</td><td><a href="https://docs.holykeebs.com/footprints/CPG1316S01D02.kicad_mod">Holykeebs .kicad_mod</a></td><td>Check against the datasheet, then convert to an Ergogen footprint</td></tr>
+          <tr><td>Diode SOD-123</td><td><a href="https://github.com/ceoloide/ergogen-footprints">ceoloide</a> <code>diode_tht_sod123.js</code></td><td></td></tr>
+          <tr><td>XIAO nRF52840</td><td>Custom, or adapt a community one</td><td>14 castellated pads plus back-side BAT pads</td></tr>
+          <tr><td>Power switch</td><td>ceoloide <code>power_switch_smd_side.js</code></td><td></td></tr>
+          <tr><td>Reset switch</td><td>ceoloide <code>reset_switch_smd_side.js</code></td><td>Optional</td></tr>
+          <tr><td>Battery</td><td>ceoloide <code>battery_connector_jst_ph_2.js</code>, or bare pads</td><td>Bare pads are thinner</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note ok"><b>Option: solder from the back.</b><p>Plated through-holes inside each switch pad, as on the Holykeebs practice board and in chalk, let you hand-solder every switch from underneath with an iron. Decide this before finalizing the footprint.</p></div>
+
+      <h3>Steps</h3>
+      <ol class="steps">
+        <li><b>Install the tools.</b> KiCad 9 (8 also works), Node.js LTS and <code>npm i -g ergogen</code> (version 4.1+).</li>
+        <li><b>Write <code>ergogen/config.yaml</code>.</b> Set <code>kx</code>/<code>ky</code> to 16.5, add a 5×3 matrix zone and a 3-key thumb zone with no stagger or splay, add outlines for the board, case and battery pocket, and add PCB entries with <code>template: kicad8</code>. Then run <code>ergogen ergogen/ -o output/</code>.</li>
+        <li><b>Set up the board in KiCad.</b> 1.0 mm thick, 2 layers, 1 oz copper, with the JLCPCB design rules. Use 0.2 mm traces (0.25 mm for power) and 0.3 / 0.6 mm vias.</li>
+        <li><b>Route.</b> Columns on the front layer and rows on the back. Add a ground pour on both layers, and keep copper away from the XIAO antenna end. Add M2 holes or keep-outs for the case.</li>
+        <li><b>Check.</b> Run the design-rule check and look at the 3D viewer for collisions. Print the board 1:1 on paper and lay real parts on it.</li>
+        <li><b>Order.</b> Export the Gerbers and drill files. Order 1.0 mm FR4 with an ENIG finish (flatter pads help the switches sit level), quantity 5, plus a stencil if you'll use paste.</li>
+      </ol>
+    </section>
+
+    <!-- 03 -->
+    <section id="firmware">
+      <h2><span class="n">03</span>Firmware</h2>
+      <p>You can start this as soon as the GPIO map is settled. Create a <code>zmk-config</code> repo from the <a href="https://zmk.dev/docs/user-setup">ZMK user setup</a>. GitHub Actions builds a <code>.uf2</code> file for each half.</p>
+
+      <h3>Custom shield files (<code>boards/shields/&lt;name&gt;/</code>)</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Kconfig.shield</td><td>Left and right shield flags</td></tr>
+          <tr><td class="mono">Kconfig.defconfig</td><td>Keyboard name, split on, left half as central</td></tr>
+          <tr><td class="mono">&lt;name&gt;.dtsi</td><td>Matrix scan, 36-key transform, physical layout</td></tr>
+          <tr><td class="mono">&lt;name&gt;_left/right.overlay</td><td>Column pins per side, column offset on the right</td></tr>
+          <tr><td class="mono">&lt;name&gt;-layouts.dtsi</td><td>Physical layout for ZMK Studio</td></tr>
+          <tr><td class="mono">&lt;name&gt;.keymap</td><td>Default keymap</td></tr>
+          <tr><td class="mono">&lt;name&gt;.zmk.yml</td><td>Metadata</td></tr>
+        </tbody>
+      </table></div>
+      <p>Check the current XIAO board ID in the ZMK docs, because board naming changed with the Zephyr 4.x migration (for example <code>xiao_ble//zmk</code>).</p>
+
+      <h3>Config</h3>
+<pre>CONFIG_ZMK_SLEEP=y
+CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=900000      # 15 min to deep sleep
+CONFIG_ZMK_BLE_EXPERIMENTAL_CONN=y
+CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING=y
+CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY=y
+CONFIG_ZMK_STUDIO=y                        # central side only</pre>
+
+      <ul>
+        <li><b>Keymap.</b> Start from a Miryoku- or Callum-style layout with home-row mods and 3 thumbs per side, then adjust it in ZMK Studio without reflashing.</li>
+        <li><b>Flash.</b> Double-tap reset on the XIAO to mount it as a drive, then copy that side's <code>.uf2</code> onto it.</li>
+        <li><b>Test early.</b> Before the case is done, short each row and column pair with tweezers to confirm every key.</li>
+        <li><b>If pairing sticks.</b> Flash <code>settings_reset</code> to both halves, then reflash.</li>
+      </ul>
+    </section>
+
+    <!-- 04 -->
+    <section id="case">
+      <h2><span class="n">04</span>Case</h2>
+      <p>The case is parametric CAD written in code, using <a href="https://github.com/gumyr/build123d">build123d</a> (OpenSCAD is an alternative). It imports the Ergogen outline files so it always matches the PCB. Key pitch, PCB thickness, battery size, wall and floor thickness are all parameters.</p>
+
+      <div class="figure">
+        <div class="scroll">
+          <svg viewBox="0 0 520 150" width="100%" style="min-width:460px" role="img" aria-label="Case cross-section">
+            <rect x="20" y="118" width="480" height="10" fill="var(--key-edge)"/>
+            <rect x="20" y="60" width="10" height="68" fill="var(--key-edge)"/>
+            <rect x="490" y="60" width="10" height="68" fill="var(--key-edge)"/>
+            <rect x="30" y="60" width="460" height="12" fill="var(--mask)"/>
+            <rect x="190" y="82" width="150" height="34" rx="3" fill="var(--gold-soft)" stroke="var(--gold)"/>
+            <text x="265" y="103" text-anchor="middle" font-size="11">battery pocket</text>
+            <rect x="80" y="72" width="16" height="8" fill="var(--ink)"/>
+            <rect x="400" y="72" width="16" height="8" fill="var(--ink)"/>
+            <rect x="140" y="72" width="6" height="46" fill="var(--key-edge)"/>
+            <rect x="370" y="72" width="6" height="46" fill="var(--key-edge)"/>
+            <g fill="var(--key)" stroke="var(--key-edge)">
+              <rect x="50" y="42" width="70" height="18"/><rect x="140" y="42" width="70" height="18"/><rect x="230" y="42" width="70" height="18"/><rect x="320" y="42" width="70" height="18"/><rect x="410" y="42" width="70" height="18"/>
+            </g>
+            <g fill="var(--sheet)" stroke="var(--key-edge)">
+              <rect x="48" y="26" width="74" height="14" rx="2"/><rect x="138" y="26" width="74" height="14" rx="2"/><rect x="228" y="26" width="74" height="14" rx="2"/><rect x="318" y="26" width="74" height="14" rx="2"/><rect x="408" y="26" width="74" height="14" rx="2"/>
+            </g>
+            <text x="20" y="18" font-size="11">keycaps</text>
+            <text x="505" y="54" font-size="11" text-anchor="end">switches</text>
+            <text x="505" y="146" font-size="11" text-anchor="end">floor 0.8–1.0 mm</text>
+            <text x="35" y="69" font-size="9" fill="var(--sheet)" style="fill:var(--sheet)">PCB 1.0 mm</text>
+            <text x="88" y="94" font-size="10" text-anchor="middle">diodes</text>
+            <text x="143" y="146" font-size="10" text-anchor="middle">support rib</text>
+          </svg>
+        </div>
+        <div class="cap">Cross-section, not to scale. The wall rises only to the top of the PCB, so the switches and keycaps stand proud.</div>
+      </div>
+
+      <ul>
+        <li><b>Tray.</b> The floor and walls are one piece. The PCB drops in and rests on a ledge around the inside of the wall.</li>
+        <li><b>Retention.</b> 3–4 M2 screws into heat-set inserts, or thin magnets, or a snap lip.</li>
+        <li><b>Support.</b> Ribs or posts under the PCB between the diodes, so the 1.0 mm board doesn't flex when you type.</li>
+        <li><b>Cutouts.</b> USB-C on the outer edge, the power switch slot and an optional reset hole.</li>
+        <li><b>Battery pocket</b> in the floor. Hold the cell with Kapton tape or thin foam, and never compress it.</li>
+        <li><b>Feet.</b> Rubber feet in recessed pockets, so they add no height.</li>
+      </ul>
+
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Resin (SLA)</td><td>Best for 0.8 mm floors and crisp cutouts</td></tr>
+          <tr><td>FDM, 0.2–0.4 mm nozzle</td><td>PETG or PLA+, 0.1–0.12 mm layers, printed floor-down</td></tr>
+          <tr><td>JLC3DP / PCBWay</td><td>Resin or MJF, once the design is stable</td></tr>
+        </tbody>
+      </table></div>
+      <p>Print a single-key test coupon and a PCB-edge fit test before printing a full half.</p>
+    </section>
+
+    <!-- 05 -->
+    <section id="assembly">
+      <h2><span class="n">05</span>Assembly &amp; test</h2>
+      <div class="note"><b>Practise first.</b><p>The <a href="https://holykeebs.com/products/pg1316s-practice-board">Holykeebs PG1316S practice board</a> is cheap, and these switches are close to impossible to desolder.</p></div>
+      <ol class="steps">
+        <li><b>Inspect the bare PCB.</b> Check for shorts between BAT+ and GND, and between VCC and GND.</li>
+        <li><b>Diodes</b> on the back. Check orientation before soldering, and use very little solder.</li>
+        <li><b>XIAO.</b> Solder the castellations flat. Flash the firmware now and confirm it shows up over USB.</li>
+        <li><b>Test the matrix before the switches.</b> Short each switch's pads with tweezers and confirm the key registers.</li>
+        <li><b>Switches.</b> Either paste and a hot plate at 260 °C or less for under 5 s, or solder from the back through the pad holes at 280 °C or less for 3 s or less. Use very little solder, since excess stops the switch sitting flat. Test each column as you finish it.</li>
+        <li><b>Power switch and battery.</b> Check polarity with a multimeter first. BAT− goes to the XIAO's BAT−, and BAT+ goes through the power switch to the XIAO's BAT+.</li>
+        <li><b>Full test on battery.</b> Pairing, every key, battery percentage, sleep and wake.</li>
+        <li><b>Into the case.</b> Fix the battery with Kapton or foam, then fit the PCB and screws.</li>
+        <li><b>Keycaps.</b> Optionally add a 0.5 mm Poron foam layer to quiet them (a tip from chalk).</li>
+      </ol>
+      <div class="tbl"><table>
+        <thead><tr><th>Symptom</th><th>Likely cause</th></tr></thead>
+        <tbody>
+          <tr><td>Whole row or column dead</td><td>A trace or a XIAO pin joint. Reflow it.</td></tr>
+          <tr><td>One key dead</td><td>Diode orientation or a switch pad joint</td></tr>
+          <tr><td>Halves won't pair</td><td>Flash <code>settings_reset</code> to both, then reflash the firmware</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- BOM -->
+    <section id="bom">
+      <h2>Parts list</h2>
+      <p>Quantities cover the full keyboard (both halves). Spares are in brackets.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Qty</th><th>Part</th><th>Notes / source</th></tr></thead>
+        <tbody>
+          <tr><td class="num">2 (+3)</td><td>PCB, 1.0 mm FR4, ENIG</td><td>JLCPCB, minimum order 5</td></tr>
+          <tr><td class="num">36 (+14)</td><td>Kailh PG1316S switch</td><td><a href="https://holykeebs.com/products/kailh-pg1316s-butterfly-switch-10-pack">Holykeebs</a>, 10-packs</td></tr>
+          <tr><td class="num">36 (+4)</td><td>PG1316S keycaps, 1U</td><td><a href="https://holykeebs.com/products/kailh-pg1316s-keycaps">Kailh caps via Holykeebs</a>, or 3D-printed</td></tr>
+          <tr><td class="num">36 (+10)</td><td>1N4148W diode, SOD-123</td><td>LCSC / AliExpress</td></tr>
+          <tr><td class="num">2</td><td>Seeed XIAO nRF52840</td><td><a href="https://wiki.seeedstudio.com/XIAO_BLE/">Seeed</a></td></tr>
+          <tr><td class="num">2</td><td>Thin LiPo pouch, 2–3 mm, with protection</td><td>For example 301230 or 302030</td></tr>
+          <tr><td class="num">2</td><td>SMD side slide power switch</td><td>For example MSK-12C02</td></tr>
+          <tr><td class="num">0–2</td><td>Low-profile reset tact switch</td><td>Optional</td></tr>
+          <tr><td class="num">8</td><td>M2 × 3 mm screws + heat-set inserts</td><td>Or 6 × 1 mm magnets</td></tr>
+          <tr><td class="num">1</td><td>PG1316S practice board</td><td><a href="https://holykeebs.com/products/pg1316s-practice-board">Holykeebs</a></td></tr>
+          <tr><td class="num">—</td><td>Kapton tape, 0.5 mm Poron foam, thin rubber feet</td><td></td></tr>
+          <tr><td class="num">—</td><td>Filament or resin for the case</td><td></td></tr>
+        </tbody>
+      </table></div>
+      <p><b>Tools:</b> a fine-tip temperature-controlled iron, flux, 0.3–0.5 mm solder, a hot plate or hot-air station with paste (for the pads method), a multimeter, tweezers, calipers and flush cutters.</p>
+    </section>
+
+    <!-- Resources -->
+    <section id="resources">
+      <h2>Resources</h2>
+      <div class="cols2">
+        <div>
+          <h3>Switch &amp; keycaps</h3>
+          <ul>
+            <li><a href="https://holykeebs.com/products/kailh-pg1316s-butterfly-switch-10-pack">PG1316S product page</a></li>
+            <li><a href="https://docs.holykeebs.com/datasheets/CPG1316S01D02.pdf">PG1316S datasheet (PDF)</a></li>
+            <li><a href="https://docs.holykeebs.com/footprints/CPG1316S01D02.kicad_mod">PG1316S KiCad footprint</a></li>
+            <li><a href="https://holykeebs.com/products/kailh-pg1316s-keycaps">Kailh PG1316S keycaps</a></li>
+            <li><a href="https://holykeebs.com/products/pg1316s-practice-board">PG1316S practice board</a></li>
+            <li><a href="https://holykeebs.com/products/kailh-pg1316m-ultra-thin-butterfly-switch">PG1316M variant</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Prior builds</h3>
+          <ul>
+            <li><a href="https://github.com/vuoz/chalk">vuoz/chalk</a>: a 42-key PG1316S split on XIAO, about 6 mm thick. The closest reference.</li>
+            <li><a href="https://kbd.news/Chalk-2721.html">Chalk on kbd.news</a></li>
+            <li><a href="https://www.reddit.com/r/ErgoMechKeyboards/">r/ErgoMechKeyboards</a>. Search for "PG1316".</li>
+          </ul>
+        </div>
+        <div>
+          <h3>PCB design</h3>
+          <ul>
+            <li><a href="https://www.kicad.org/">KiCad</a></li>
+            <li><a href="https://docs.ergogen.xyz/">Ergogen docs</a> and the <a href="https://ergogen.cache.works">web playground</a></li>
+            <li><a href="https://github.com/ceoloide/ergogen-footprints">ceoloide/ergogen-footprints</a> (KiCad 8, Ergogen 4.1+)</li>
+            <li><a href="https://github.com/infused-kim/kb_ergogen_fp">infused-kim/kb_ergogen_fp</a> (older, includes 3D models)</li>
+            <li><a href="https://nilnil.notion.site/Convert-Kicad-Footprints-to-Ergogen-8340ce87ad554c69af4e3f92bc9a0898">Converting KiCad footprints to Ergogen</a></li>
+            <li><a href="https://jlcpcb.com/capabilities/pcb-capabilities">JLCPCB capabilities</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Controller, firmware &amp; case</h3>
+          <ul>
+            <li><a href="https://wiki.seeedstudio.com/XIAO_BLE/">XIAO nRF52840 wiki</a></li>
+            <li><a href="https://zmk.dev/docs">ZMK docs</a></li>
+            <li><a href="https://zmk.dev/docs/development/hardware-integration/new-shield">ZMK new shield guide</a></li>
+            <li><a href="https://github.com/gumyr/build123d">build123d</a> and <a href="https://openscad.org/">OpenSCAD</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Tools for Claude Code</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Tool</th><th>What it lets Claude do</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://github.com/lamaalrajih/kicad-mcp">kicad-mcp</a></td><td>Inspect your KiCad project, run design-rule checks and pull a parts list. Needs KiCad 9+, Python 3.10+ and uv.</td></tr>
+          <tr><td><a href="https://github.com/pzfreo/build123d-mcp">build123d-mcp</a></td><td>Build the case in code, render views and measure it, so Claude can see what it designs.</td></tr>
+          <tr><td><code>kicad-cli</code></td><td>Comes with KiCad. Runs checks and exports manufacturing files without opening KiCad.</td></tr>
+          <tr><td><code>ergogen</code></td><td>Regenerates the PCB and outlines from the YAML config.</td></tr>
+          <tr><td><a href="https://cli.github.com/"><code>gh</code></a></td><td>Starts and downloads the ZMK firmware builds.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <footer>The Markdown files in <code>docs/</code> are the source. This page presents the same content.</footer>
+  </main>
+</div>
+
+<script>
+// Board drawing, in millimetres.
+(function () {
+  const P = 16.5, inset = 0.9, gap = 20, half = 5 * P;
+  const svg = document.getElementById('board');
+  const ns = 'http://www.w3.org/2000/svg';
+  const el = (tag, attrs, text) => {
+    const n = document.createElementNS(ns, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    if (text) n.textContent = text;
+    svg.appendChild(n);
+    return n;
+  };
+  const legends = {
+    L: [['Q','W','E','R','T'],['A','S','D','F','G'],['Z','X','C','V','B'],[null,null,'T1','T2','T3']],
+    R: [['Y','U','I','O','P'],['H','J','K','L',';'],['N','M',',','.','/'],['T4','T5','T6',null,null]]
+  };
+  [['L', 0], ['R', half + gap]].forEach(([side, ox]) => {
+    el('rect', { x: ox - 1.5, y: -1.5, width: half + 3, height: 4 * P + 3, rx: 2, fill: 'none', stroke: 'var(--key-edge)', 'stroke-width': 0.4 });
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++) {
+      const label = legends[side][r][c];
+      if (!label) continue;
+      const x = ox + c * P, y = r * P;
+      el('rect', { x: x + inset, y: y + inset, width: P - 2 * inset, height: P - 2 * inset, rx: 1.2, fill: 'var(--key)', stroke: 'var(--key-edge)', 'stroke-width': 0.35 });
+      el('text', { x: x + P / 2, y: y + P / 2 + 1.4, 'text-anchor': 'middle', 'font-size': 4 }, label);
+    }
+    // XIAO: 21 x 17.8 mm, centred in the 2-key slot.
+    const sx = side === 'L' ? ox : ox + 3 * P;
+    const xx = sx + (2 * P - 21) / 2, xy = 3 * P + (P - 17.8) / 2;
+    el('rect', { x: xx, y: xy, width: 21, height: 17.8, rx: 1, fill: 'var(--gold-soft)', stroke: 'var(--gold)', 'stroke-width': 0.45 });
+    const usbX = side === 'L' ? xx - 1.2 : xx + 21 - 2.2;
+    el('rect', { x: usbX, y: xy + 8.9 - 4.5, width: 3.4, height: 9, rx: 0.8, fill: 'var(--gold)' });
+    el('text', { x: xx + 10.5, y: xy + 10.3, 'text-anchor': 'middle', 'font-size': 3.6, style: 'fill:var(--gold)' }, 'XIAO');
+    el('text', { x: ox + half / 2, y: -4.5, 'text-anchor': 'middle', 'font-size': 3.6 }, side === 'L' ? 'LEFT' : 'RIGHT');
+  });
+  // Dimension line under the left half.
+  const dy = 4 * P + 6;
+  el('line', { x1: 0, y1: dy, x2: half, y2: dy, stroke: 'var(--muted)', 'stroke-width': 0.3 });
+  el('line', { x1: 0, y1: dy - 1.5, x2: 0, y2: dy + 1.5, stroke: 'var(--muted)', 'stroke-width': 0.3 });
+  el('line', { x1: half, y1: dy - 1.5, x2: half, y2: dy + 1.5, stroke: 'var(--muted)', 'stroke-width': 0.3 });
+  el('text', { x: half / 2, y: dy + 5, 'text-anchor': 'middle', 'font-size': 3.6 }, '82.5 mm (5 × 16.5)');
+})();
+
+// Height stack, bars to scale.
+(function () {
+  const layers = [
+    ['Keycap', 1.25, '1.0–1.5 mm', 'var(--key-edge)'],
+    ['Switch', 1.8, '1.8 mm', 'var(--ink)'],
+    ['PCB', 1.0, '1.0 mm', 'var(--mask)'],
+    ['Battery / diodes', 2.25, '2.0–2.5 mm', 'var(--gold)'],
+    ['Case floor', 0.9, '0.8–1.0 mm', 'var(--muted)']
+  ];
+  const max = 2.5, root = document.getElementById('stack');
+  layers.forEach(([name, mm, range, color]) => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `<span>${name}</span><span><span class="bar" style="display:block;width:${(mm / max) * 100}%;background:${color}"></span></span><span class="mm">${range}</span>`;
+    root.appendChild(row);
+  });
+  const total = document.createElement('div');
+  total.className = 'row total';
+  total.innerHTML = '<span>Total</span><span></span><span class="mm">6.6–7.8 mm</span>';
+  root.appendChild(total);
+})();
+
+// Remember ticked phases in this browser only.
+document.querySelectorAll('.phases input').forEach(box => {
+  try { box.checked = localStorage.getItem('keeb-' + box.id) === '1'; } catch (e) {}
+  box.addEventListener('change', () => {
+    try { localStorage.setItem('keeb-' + box.id, box.checked ? '1' : '0'); } catch (e) {}
+  });
+});
+</script>

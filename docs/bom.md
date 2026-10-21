@@ -2,7 +2,7 @@
 
 | Qty | Part | Notes / source |
 |---|---|---|
-| 2 (+5 spare) | PCB, 1.0 mm FR4, ENIG | JLCPCB, minimum order 5 |
+| 2 (+3 spare) | PCB, 1.0 mm FR4, ENIG | JLCPCB, minimum order 5 |
 | 36 (+14 spare = 50) | Kailh PG1316S switch | [Holykeebs](https://holykeebs.com/products/kailh-pg1316s-butterfly-switch-10-pack), 10-packs |
 | 36 (+4) | PG1316S keycaps, 1U | [Kailh caps via Holykeebs](https://holykeebs.com/products/kailh-pg1316s-keycaps), or 3D-printed |
 | 36 (+10) | 1N4148W diode, SOD-123 | LCSC / AliExpress |
