@@ -4,12 +4,11 @@ Practise first. The [Holykeebs PG1316S practice board](https://holykeebs.com/pro
 
 ## Order of operations (per half)
 1. **Inspect the PCB.** Check for shorts between BAT+ and GND, and between VCC and GND.
-2. **Diodes** on the back. Check orientation against the silkscreen **before** soldering. Use minimal solder, because blobs can lift whatever sits on top.
-3. **XIAO.** Solder the castellations flat. Flash the firmware **now** and confirm it enumerates over USB.
+2. **Diodes** on the side opposite the switches (front or back, depending on the half). Check orientation against the silkscreen **before** soldering. Use minimal solder, because blobs can lift whatever sits on top.
+3. **XIAO.** Place it **face-down** over the cutout and solder the castellations flat. Set the power-pin jumpers for this half. Flash the firmware **now** and confirm it enumerates over USB.
 4. **Matrix test before switches:** short each switch's pads with tweezers and confirm the keypress (use the ZMK keymap or a key tester site).
 5. **Switches:**
-   - **Pads method:** use a thin layer of paste and a hot plate or hot air at ≤ 260 °C for < 5 s.
-   - **Through-hole method:** place the switch, then solder from the back through the via-in-pad with the iron at ≤ 280 °C for ≤ 3 s.
+   - Place the switch, then solder from the back through the via-in-pad with the iron at ≤ 280 °C for ≤ 3 s.
    - **Use very little solder.** Excess solder stops the switch sitting flat.
    - Test continuity on each column after soldering a column.
 6. **Power switch and battery.** **Check polarity with a multimeter before connecting.** Solder BAT− to XIAO BAT−, and BAT+ through the power switch to XIAO BAT+.

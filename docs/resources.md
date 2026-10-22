@@ -3,8 +3,8 @@
 ## Switch & keycaps
 - [Kailh PG1316S, Holykeebs product page](https://holykeebs.com/products/kailh-pg1316s-butterfly-switch-10-pack)
 - [PG1316S datasheet (PDF)](https://docs.holykeebs.com/datasheets/CPG1316S01D02.pdf). This is the source of truth for the dimensions in [00-requirements](00-requirements.md)
-- [PG1316S KiCad footprint](https://docs.holykeebs.com/footprints/CPG1316S01D02.kicad_mod)
-- [Kailh PG1316S keycaps](https://holykeebs.com/products/kailh-pg1316s-keycaps)
+- [Collected PG1316S KiCad footprints and STEP models](../assets/pg1316s/README.md) (community sources; validate before fabrication)
+- [Kailh PG1316S keycaps](https://holykeebs.com/products/kailh-pg1316s-keycaps) — selected keycaps; see [collected local footprints and 3D models](../assets/pg1316s/README.md)
 - [PG1316S practice board](https://holykeebs.com/products/pg1316s-practice-board)
 - [PG1316M variant](https://holykeebs.com/products/kailh-pg1316m-ultra-thin-butterfly-switch)
 

@@ -153,7 +153,7 @@ footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule)
     <header class="hero" id="overview">
       <div class="eyebrow">36 keys · PG1316S · XIAO nRF52840 · ZMK</div>
       <h1>An ultra-thin wireless split, two clean rectangles</h1>
-      <p class="lede">A pocketable 36-key keyboard with no row or column stagger. It uses Kailh PG1316S laptop-style butterfly switches, a 1 mm PCB and a 3D-printed tray. The target is 7 mm or less from desk to keycap.</p>
+      <p class="lede">A pocketable 36-key keyboard with no row or column stagger. It uses Kailh PG1316S laptop-style butterfly switches, a 0.8 mm reversible PCB and a 3D-printed tray. The target is 7 mm or less from desk to keycap.</p>
 
       <div class="specs">
         <div class="spec"><span class="k">Keys</span><span class="v">36 (18 per half)</span></div>
@@ -161,16 +161,16 @@ footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule)
         <div class="spec"><span class="k">Switch</span><span class="v">Kailh PG1316S, SMD</span></div>
         <div class="spec"><span class="k">Controller</span><span class="v">XIAO nRF52840 ×2</span></div>
         <div class="spec"><span class="k">Firmware</span><span class="v">ZMK, split BLE</span></div>
-        <div class="spec"><span class="k">Battery</span><span class="v">Thin LiPo pouch</span></div>
-        <div class="spec"><span class="k">PCB</span><span class="v">1.0 mm FR4, 2-layer</span></div>
+        <div class="spec"><span class="k">Battery</span><span class="v">2.5 mm LiPo, ~100 mAh</span></div>
+        <div class="spec"><span class="k">PCB</span><span class="v">0.8 mm FR4, 2-layer, reversible</span></div>
         <div class="spec"><span class="k">Target height</span><span class="v">≤ 7 mm</span></div>
       </div>
 
       <div class="figure">
         <div class="scroll">
-          <svg id="board" viewBox="-6 -10 197 92" width="100%" style="min-width:520px" role="img" aria-label="Top view of both halves at 16.5 mm pitch"></svg>
+          <svg id="board" viewBox="-6 -10 202 94" width="100%" style="min-width:520px" role="img" aria-label="Top view of both halves at 17 mm pitch"></svg>
         </div>
-        <div class="cap">Top view drawn to scale at 16.5 mm pitch (provisional). The XIAO, shown in gold, fills the two empty outer slots of the thumb row.</div>
+        <div class="cap">Top view drawn to scale at 17 mm pitch. The XIAO, shown in gold, fills the two empty outer slots of the thumb row.</div>
       </div>
 
       <h3>Build phases</h3>
@@ -201,8 +201,18 @@ footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule)
           <tr><td>Controller</td><td>Seeed XIAO nRF52840</td><td>Small (21 × 17.8 mm), cheap, has a built-in LiPo charger, works with ZMK, proven with PG1316S in chalk</td></tr>
           <tr><td>Firmware</td><td>ZMK</td><td>The standard for wireless splits</td></tr>
           <tr><td>Thumbs</td><td>4th row, inner 3 columns</td><td>Keeps the grid ortholinear. The 2 empty outer slots hold the XIAO</td></tr>
-          <tr><td>Case</td><td>3D printed</td><td>Cheap and quick to iterate</td></tr>
-          <tr><td>PCB thickness</td><td>1.0 mm (0.8 mm stretch goal)</td><td>Thinner than the standard 1.6 mm. Chalk proved 1.0 mm works</td></tr>
+          <tr><td>Case</td><td>3D-printed open tray, floating keys</td><td>Cheap, quick to iterate and the thinnest option. A top deck doesn't fit at 17 mm pitch</td></tr>
+          <tr><td>PCB thickness</td><td>0.8 mm</td><td>Needed to reach 7 mm. The tray needs extra support posts</td></tr>
+          <tr><td>Key pitch</td><td>17.0 × 17.0 mm</td><td>Leaves about 0.75 mm between the 16.25 × 16.05 mm caps</td></tr>
+          <tr><td>Keycaps</td><td>Stock Kailh PG1316S 1U (Holykeebs)</td><td>Off the shelf</td></tr>
+          <tr><td>PCB strategy</td><td>One reversible PCB</td><td>One design and one order covers both halves</td></tr>
+          <tr><td>Solder method</td><td>Vias in the switch pads, iron from the back</td><td>No hot plate or stencil needed, and rework is easier</td></tr>
+          <tr><td>Frame pads (pad 3)</td><td>No net</td><td>Easier to hand solder</td></tr>
+          <tr><td>Matrix</td><td>5 × 4, col2row, SOD-323 diodes</td><td>The standard XIAO has only 11 GPIO</td></tr>
+          <tr><td>XIAO mounting</td><td>Face-down over a PCB cutout</td><td>Only its 1.2 mm board stands above the PCB</td></tr>
+          <tr><td>Reset</td><td>Floor pinhole plus keymap keys</td><td>The onboard button faces the floor. No extra parts</td></tr>
+          <tr><td>Screen</td><td>None</td><td>Keeps the GPIO free and the battery small</td></tr>
+          <tr><td>Battery</td><td>2.5 mm pouch, ~100 mAh (252030 class)</td><td>Fits the 7 mm budget and is hidden under the PCB</td></tr>
         </tbody>
       </table></div>
 
@@ -223,44 +233,36 @@ footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule)
       <div class="note"><b>Buy spares.</b> <p>The switch is surface-mount and very hard to remove once soldered. Buy at least 10 to 15% extra.</p></div>
 
       <h3 id="battery">Battery</h3>
-      <p>You asked for a thin, watch-style rechargeable cell. Here are the options:</p>
-      <div class="tbl"><table>
-        <thead><tr><th>Option</th><th>Thickness</th><th>Capacity</th><th>Verdict</th></tr></thead>
-        <tbody>
-          <tr><td>LIR2032 coin cell</td><td class="num">3.2 mm</td><td class="num">~40 mAh</td><td>Not recommended. Its max charge current is about 20 mA, and the XIAO charges at 50 mA or more.</td></tr>
-          <tr><td>LIR2450 coin cell</td><td class="num">5.0 mm</td><td class="num">~120 mAh</td><td>Too thick for the target.</td></tr>
-          <tr class="pick"><td>Thin LiPo pouch (smartwatch style)</td><td class="num">2–3 mm</td><td class="num">100–300 mAh</td><td><b>Recommended.</b> For example 301230 (~100 mAh), 302030 (~150 mAh) or 402030 (~200 mAh, 4 mm).</td></tr>
-        </tbody>
-      </table></div>
+      <p><b>Decision:</b> a 2.5 mm LiPo pouch of about 100 mAh (252030 class, 2.5 × 20 × 30 mm), hidden under the PCB.</p>
       <ul>
-        <li>The pouch code reads thickness / width / length, so <code>301230</code> is 3.0 × 12 × 30 mm.</li>
-        <li>Choose a cell with a protection PCB and bare leads or a JST-SH connector.</li>
-        <li>The XIAO charges at 50 mA by default (P0.13 left floating) or 100 mA (P0.13 driven LOW). Keep 50 mA for cells under 100 mAh.</li>
-        <li>Expected life with ZMK: the central half draws about 0.3–1 mA on average while in use. A 150 mAh cell lasts roughly 2–6 weeks on the central half and months on the other half. Sleep settings matter more than capacity.</li>
+        <li>The pouch code reads thickness / width / length, so <code>252030</code> is 2.5 × 20 × 30 mm.</li>
+        <li>Choose a cell with a protection PCB and bare leads.</li>
+        <li>It's rechargeable over each half's USB-C port. The XIAO charges at 50 mA by default (P0.13 left floating), which is 0.5 C for this cell, so a full charge takes about 2–2.5 hours.</li>
+        <li>Expected life with ZMK: roughly 1–3 weeks on the central half and months on the other half. Sleep settings matter more than capacity.</li>
+        <li>Rejected: LIR2032 coin cells (they can't take the XIAO's 50 mA charge current), LIR2450 (too thick), and 3.0 mm pouches (they push the height to about 7.3 mm).</li>
       </ul>
 
       <h3>Height budget</h3>
       <div class="figure">
         <div class="stack" id="stack"></div>
-        <div class="cap">Bar lengths are to scale, using the middle of each range. The XIAO's height above the PCB must be measured. If it stands taller than switch plus keycap, drop it into a PCB cutout.</div>
+        <div class="cap">Bar lengths are to scale, measured over the battery. The switch and keycap heights come from the Kailh STEP, so measure a real cap. There's no margin. The face-down XIAO's USB-C ends about 2.4 mm below the PCB, so the floor needs a pocket there.</div>
       </div>
 
-      <h3>Open questions (resolve before routing)</h3>
+      <h3>Remaining checks (do before ordering)</h3>
       <ul class="todo">
-        <li><span><b>Key pitch.</b> Provisional 16.5 × 16.5 mm. The minimum is 14.7 mm, set by the land pattern. Confirm against the Kailh 1U keycap datasheet; chalk used about 16 × 16 mm caps.</span></li>
-        <li><span><b>Battery model.</b> Choose a specific pouch cell and record its exact L × W × T.</span></li>
-        <li><span><b>XIAO mounting height.</b> Surface-mount on the castellations or sit it in a PCB cutout. Measure the real part.</span></li>
-        <li><span><b>Keycaps.</b> Stock Kailh PG1316S caps, or thinner custom 3D-printed caps.</span></li>
-        <li><span><b>Solder method.</b> Pads only (hot plate and paste), or through-holes under the pads so you can solder from the back with an iron.</span></li>
-        <li><span><b>PCB strategy.</b> One reversible PCB, or separate left and right PCBs.</span></li>
+        <li><span><b>Battery part.</b> Pick a specific 2.5 mm cell with protection and record its exact L × W × T. Use a 20 × 30 mm placeholder until then.</span></li>
+        <li><span><b>XIAO measurements.</b> Measure how far the components and USB-C hang below the XIAO board. This sets the cutout and the floor pocket.</span></li>
+        <li><span><b>Keycap height.</b> Measure a Holykeebs cap on a switch to confirm the 7 mm budget.</span></li>
+        <li><span><b>Switch footprint.</b> Validate it against the datasheet, then add vias in the pads and make it reversible.</span></li>
+        <li><span><b>Reversible XIAO footprint.</b> Add solder jumpers for the power pins, which mirror when the board is flipped.</span></li>
       </ul>
     </section>
 
     <!-- 01 -->
     <section id="layout">
       <h2><span class="n">01</span>Layout &amp; matrix</h2>
-      <p>Each half is 5 columns × 4 rows on a uniform pitch. Keys only, that is 82.5 × 66 mm at 16.5 mm pitch. With about 1.5 mm of case wall on each side, a half comes to roughly <b>86 × 69 mm</b>.</p>
-      <p>The XIAO slot is 33 × 16.5 mm and the XIAO is 21 × 17.8 mm, so it fits lengthwise with about 0.65 mm of overhang above and below. The USB-C port faces the outer side edge. Check this in the KiCad 3D viewer.</p>
+      <p>Each half is 5 columns × 4 rows on a uniform pitch. Keys only, that is 85 × 68 mm at 17 mm pitch. With 0.2 mm clearance and a 2.5 mm wall on each side, a half comes to <b>90.4 × 73.4 mm</b>. The right half is the same reversible PCB, flipped over.</p>
+      <p>The XIAO slot is 34 × 17 mm and the XIAO is 21 × 17.8 mm, so it fits lengthwise with about 0.4 mm of overhang above and below. It mounts face-down, with its components and USB-C hanging through a PCB cutout. The USB-C port faces the outer side edge. Check this in the KiCad 3D viewer.</p>
 
       <div class="cols2">
         <div>
@@ -269,7 +271,7 @@ footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule)
             <li>A 5-column × 4-row diode matrix with 18 switches per half.</li>
             <li>That uses <b>9 GPIO</b>. The XIAO has 11 (D0–D10), which leaves 2 spare.</li>
             <li>Diode direction is col2row, the ZMK default.</li>
-            <li>Use 1N4148W diodes (SOD-123) on the back. Use SOD-323 if they sit over the battery pocket.</li>
+            <li>Use 1N4148WS diodes (SOD-323) on the side opposite the switches, with reversible footprints.</li>
             <li>Don't use the NFC pins (P0.09 / P0.10) unless NFC is disabled.</li>
           </ul>
         </div>
@@ -284,15 +286,15 @@ footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule)
               <tr><td>Battery sense</td><td>Internal (P0.31 / P0.14)</td></tr>
             </tbody>
           </table></div>
-          <p class="cap" style="font-size:13px;color:var(--muted)">The right half mirrors the columns. Finalize the map while routing.</p>
+          <p class="cap" style="font-size:13px;color:var(--muted)">The XIAO pins mirror on the right half; handle that in its firmware overlay, with solder jumpers for the power pins. Finalize the map while routing.</p>
         </div>
       </div>
 
       <h3>Other parts per half</h3>
       <ul>
         <li><b>Power switch.</b> A small side-actuated slide switch (for example MSK-12C02) in series with BAT+, placed on the outer edge next to USB-C.</li>
-        <li><b>Reset button.</b> Optional, since the XIAO has one. Add one if the XIAO will be enclosed.</li>
-        <li><b>Battery pads.</b> BAT+ and BAT− run to the XIAO's back-side pads through the power switch.</li>
+        <li><b>Reset.</b> No extra switch. Use a pinhole in the floor to reach the face-down XIAO's button, plus <code>&amp;bootloader</code> / <code>&amp;sys_reset</code> keys in the keymap.</li>
+        <li><b>Battery pads.</b> BAT+ and BAT− run to the XIAO's battery pads through the power switch. They face up on the face-down XIAO.</li>
       </ul>
     </section>
 
@@ -306,10 +308,9 @@ footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule)
         <thead><tr><th>Part</th><th>Source</th><th>Notes</th></tr></thead>
         <tbody>
           <tr><td>PG1316S switch</td><td><a href="https://docs.holykeebs.com/footprints/CPG1316S01D02.kicad_mod">Holykeebs .kicad_mod</a></td><td>Check against the datasheet, then convert to an Ergogen footprint</td></tr>
-          <tr><td>Diode SOD-123</td><td><a href="https://github.com/ceoloide/ergogen-footprints">ceoloide</a> <code>diode_tht_sod123.js</code></td><td></td></tr>
+          <tr><td>Diode SOD-323</td><td><a href="https://github.com/ceoloide/ergogen-footprints">ceoloide</a> diode footprint</td><td>Reversible</td></tr>
           <tr><td>XIAO nRF52840</td><td>Custom, or adapt a community one</td><td>14 castellated pads plus back-side BAT pads</td></tr>
           <tr><td>Power switch</td><td>ceoloide <code>power_switch_smd_side.js</code></td><td></td></tr>
-          <tr><td>Reset switch</td><td>ceoloide <code>reset_switch_smd_side.js</code></td><td>Optional</td></tr>
           <tr><td>Battery</td><td>ceoloide <code>battery_connector_jst_ph_2.js</code>, or bare pads</td><td>Bare pads are thinner</td></tr>
         </tbody>
       </table></div>
@@ -318,11 +319,11 @@ footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule)
       <h3>Steps</h3>
       <ol class="steps">
         <li><b>Install the tools.</b> KiCad 9 (8 also works), Node.js LTS and <code>npm i -g ergogen</code> (version 4.1+).</li>
-        <li><b>Write <code>ergogen/config.yaml</code>.</b> Set <code>kx</code>/<code>ky</code> to 16.5, add a 5×3 matrix zone and a 3-key thumb zone with no stagger or splay, add outlines for the board, case and battery pocket, and add PCB entries with <code>template: kicad8</code>. Then run <code>ergogen ergogen/ -o output/</code>.</li>
-        <li><b>Set up the board in KiCad.</b> 1.0 mm thick, 2 layers, 1 oz copper, with the JLCPCB design rules. Use 0.2 mm traces (0.25 mm for power) and 0.3 / 0.6 mm vias.</li>
+        <li><b>Write <code>ergogen/config.yaml</code>.</b> Set <code>kx</code>/<code>ky</code> to 17, add a 5×3 matrix zone and a 3-key thumb zone with no stagger or splay, add outlines for the board, case and battery pocket, and add one reversible PCB with <code>template: kicad8</code>. Then run <code>ergogen ergogen/ -o output/</code>.</li>
+        <li><b>Set up the board in KiCad.</b> 0.8 mm thick, 2 layers, 1 oz copper, with the JLCPCB design rules. Use 0.2 mm traces (0.25 mm for power) and 0.3 / 0.6 mm vias.</li>
         <li><b>Route.</b> Columns on the front layer and rows on the back. Add a ground pour on both layers, and keep copper away from the XIAO antenna end. Add M2 holes or keep-outs for the case.</li>
         <li><b>Check.</b> Run the design-rule check and look at the 3D viewer for collisions. Print the board 1:1 on paper and lay real parts on it.</li>
-        <li><b>Order.</b> Export the Gerbers and drill files. Order 1.0 mm FR4 with an ENIG finish (flatter pads help the switches sit level), quantity 5, plus a stencil if you'll use paste.</li>
+        <li><b>Order.</b> Export the Gerbers and drill files. Order 0.8 mm FR4 with an ENIG finish (flatter pads help the switches sit level), quantity 5. One design covers both halves.</li>
       </ol>
     </section>
 
@@ -356,7 +357,7 @@ CONFIG_ZMK_STUDIO=y                        # central side only</pre>
 
       <ul>
         <li><b>Keymap.</b> Start from a Miryoku- or Callum-style layout with home-row mods and 3 thumbs per side, then adjust it in ZMK Studio without reflashing.</li>
-        <li><b>Flash.</b> Double-tap reset on the XIAO to mount it as a drive, then copy that side's <code>.uf2</code> onto it.</li>
+        <li><b>Flash.</b> Use the <code>&amp;bootloader</code> key, or double-tap reset through the case pinhole on the first flash or if the firmware is broken. Then copy that side's <code>.uf2</code> onto the drive.</li>
         <li><b>Test early.</b> Before the case is done, short each row and column pair with tweezers to confirm every key.</li>
         <li><b>If pairing sticks.</b> Flash <code>settings_reset</code> to both halves, then reflash.</li>
       </ul>
@@ -388,8 +389,8 @@ CONFIG_ZMK_STUDIO=y                        # central side only</pre>
             </g>
             <text x="20" y="18" font-size="11">keycaps</text>
             <text x="505" y="54" font-size="11" text-anchor="end">switches</text>
-            <text x="505" y="146" font-size="11" text-anchor="end">floor 0.8–1.0 mm</text>
-            <text x="35" y="69" font-size="9" fill="var(--sheet)" style="fill:var(--sheet)">PCB 1.0 mm</text>
+            <text x="505" y="146" font-size="11" text-anchor="end">floor 0.8 mm</text>
+            <text x="35" y="69" font-size="9" fill="var(--sheet)" style="fill:var(--sheet)">PCB 0.8 mm</text>
             <text x="88" y="94" font-size="10" text-anchor="middle">diodes</text>
             <text x="143" y="146" font-size="10" text-anchor="middle">support rib</text>
           </svg>
@@ -400,8 +401,8 @@ CONFIG_ZMK_STUDIO=y                        # central side only</pre>
       <ul>
         <li><b>Tray.</b> The floor and walls are one piece. The PCB drops in and rests on a ledge around the inside of the wall.</li>
         <li><b>Retention.</b> 3–4 M2 screws into heat-set inserts, or thin magnets, or a snap lip.</li>
-        <li><b>Support.</b> Ribs or posts under the PCB between the diodes, so the 1.0 mm board doesn't flex when you type.</li>
-        <li><b>Cutouts.</b> USB-C on the outer edge, the power switch slot and an optional reset hole.</li>
+        <li><b>Support.</b> Ribs or posts under the PCB between the diodes, because the 0.8 mm board flexes. Place them densely, about one per key.</li>
+        <li><b>Cutouts.</b> USB-C on the outer edge (it sits low), the power switch slot, a reset pinhole in the floor, and a floor pocket under the USB-C.</li>
         <li><b>Battery pocket</b> in the floor. Hold the cell with Kapton tape or thin foam, and never compress it.</li>
         <li><b>Feet.</b> Rubber feet in recessed pockets, so they add no height.</li>
       </ul>
@@ -426,7 +427,7 @@ CONFIG_ZMK_STUDIO=y                        # central side only</pre>
         <li><b>Diodes</b> on the back. Check orientation before soldering, and use very little solder.</li>
         <li><b>XIAO.</b> Solder the castellations flat. Flash the firmware now and confirm it shows up over USB.</li>
         <li><b>Test the matrix before the switches.</b> Short each switch's pads with tweezers and confirm the key registers.</li>
-        <li><b>Switches.</b> Either paste and a hot plate at 260 °C or less for under 5 s, or solder from the back through the pad holes at 280 °C or less for 3 s or less. Use very little solder, since excess stops the switch sitting flat. Test each column as you finish it.</li>
+        <li><b>Switches.</b> Solder from the far side through the pad vias at 280 °C or less for 3 s or less. Use very little solder, since excess stops the switch sitting flat. Test each column as you finish it.</li>
         <li><b>Power switch and battery.</b> Check polarity with a multimeter first. BAT− goes to the XIAO's BAT−, and BAT+ goes through the power switch to the XIAO's BAT+.</li>
         <li><b>Full test on battery.</b> Pairing, every key, battery percentage, sleep and wake.</li>
         <li><b>Into the case.</b> Fix the battery with Kapton or foam, then fit the PCB and screws.</li>
@@ -449,21 +450,20 @@ CONFIG_ZMK_STUDIO=y                        # central side only</pre>
       <div class="tbl"><table>
         <thead><tr><th>Qty</th><th>Part</th><th>Notes / source</th></tr></thead>
         <tbody>
-          <tr><td class="num">2 (+3)</td><td>PCB, 1.0 mm FR4, ENIG</td><td>JLCPCB, minimum order 5</td></tr>
+          <tr><td class="num">2 (+3)</td><td>PCB, 0.8 mm FR4, ENIG, reversible</td><td>JLCPCB, minimum order 5</td></tr>
           <tr><td class="num">36 (+14)</td><td>Kailh PG1316S switch</td><td><a href="https://holykeebs.com/products/kailh-pg1316s-butterfly-switch-10-pack">Holykeebs</a>, 10-packs</td></tr>
           <tr><td class="num">36 (+4)</td><td>PG1316S keycaps, 1U</td><td><a href="https://holykeebs.com/products/kailh-pg1316s-keycaps">Kailh caps via Holykeebs</a>, or 3D-printed</td></tr>
-          <tr><td class="num">36 (+10)</td><td>1N4148W diode, SOD-123</td><td>LCSC / AliExpress</td></tr>
+          <tr><td class="num">36 (+10)</td><td>1N4148WS diode, SOD-323</td><td>LCSC / AliExpress</td></tr>
           <tr><td class="num">2</td><td>Seeed XIAO nRF52840</td><td><a href="https://wiki.seeedstudio.com/XIAO_BLE/">Seeed</a></td></tr>
-          <tr><td class="num">2</td><td>Thin LiPo pouch, 2–3 mm, with protection</td><td>For example 301230 or 302030</td></tr>
+          <tr><td class="num">2</td><td>LiPo pouch, 2.5 mm, ~100 mAh, with protection</td><td>252030 class</td></tr>
           <tr><td class="num">2</td><td>SMD side slide power switch</td><td>For example MSK-12C02</td></tr>
-          <tr><td class="num">0–2</td><td>Low-profile reset tact switch</td><td>Optional</td></tr>
           <tr><td class="num">8</td><td>M2 × 3 mm screws + heat-set inserts</td><td>Or 6 × 1 mm magnets</td></tr>
           <tr><td class="num">1</td><td>PG1316S practice board</td><td><a href="https://holykeebs.com/products/pg1316s-practice-board">Holykeebs</a></td></tr>
           <tr><td class="num">—</td><td>Kapton tape, 0.5 mm Poron foam, thin rubber feet</td><td></td></tr>
           <tr><td class="num">—</td><td>Filament or resin for the case</td><td></td></tr>
         </tbody>
       </table></div>
-      <p><b>Tools:</b> a fine-tip temperature-controlled iron, flux, 0.3–0.5 mm solder, a hot plate or hot-air station with paste (for the pads method), a multimeter, tweezers, calipers and flush cutters.</p>
+      <p><b>Tools:</b> a fine-tip temperature-controlled iron, flux, 0.3–0.5 mm solder, a multimeter, tweezers, calipers and flush cutters.</p>
     </section>
 
     <!-- Resources -->
@@ -531,7 +531,7 @@ CONFIG_ZMK_STUDIO=y                        # central side only</pre>
 <script>
 // Board drawing, in millimetres.
 (function () {
-  const P = 16.5, inset = 0.9, gap = 20, half = 5 * P;
+  const P = 17, inset = 0.9, gap = 20, half = 5 * P;
   const svg = document.getElementById('board');
   const ns = 'http://www.w3.org/2000/svg';
   const el = (tag, attrs, text) => {
@@ -568,19 +568,19 @@ CONFIG_ZMK_STUDIO=y                        # central side only</pre>
   el('line', { x1: 0, y1: dy, x2: half, y2: dy, stroke: 'var(--muted)', 'stroke-width': 0.3 });
   el('line', { x1: 0, y1: dy - 1.5, x2: 0, y2: dy + 1.5, stroke: 'var(--muted)', 'stroke-width': 0.3 });
   el('line', { x1: half, y1: dy - 1.5, x2: half, y2: dy + 1.5, stroke: 'var(--muted)', 'stroke-width': 0.3 });
-  el('text', { x: half / 2, y: dy + 5, 'text-anchor': 'middle', 'font-size': 3.6 }, '82.5 mm (5 × 16.5)');
+  el('text', { x: half / 2, y: dy + 5, 'text-anchor': 'middle', 'font-size': 3.6 }, '85 mm (5 × 17)');
 })();
 
 // Height stack, bars to scale.
 (function () {
   const layers = [
-    ['Keycap', 1.25, '1.0–1.5 mm', 'var(--key-edge)'],
+    ['Keycap', 1.7, '1.7 mm', 'var(--key-edge)'],
     ['Switch', 1.8, '1.8 mm', 'var(--ink)'],
-    ['PCB', 1.0, '1.0 mm', 'var(--mask)'],
-    ['Battery / diodes', 2.25, '2.0–2.5 mm', 'var(--gold)'],
-    ['Case floor', 0.9, '0.8–1.0 mm', 'var(--muted)']
+    ['PCB', 0.8, '0.8 mm', 'var(--mask)'],
+    ['Battery + gap', 2.6, '2.5 + 0.1 mm', 'var(--gold)'],
+    ['Pocket cover', 0.1, '0.1 mm', 'var(--muted)']
   ];
-  const max = 2.5, root = document.getElementById('stack');
+  const max = 2.6, root = document.getElementById('stack');
   layers.forEach(([name, mm, range, color]) => {
     const row = document.createElement('div');
     row.className = 'row';
@@ -589,7 +589,7 @@ CONFIG_ZMK_STUDIO=y                        # central side only</pre>
   });
   const total = document.createElement('div');
   total.className = 'row total';
-  total.innerHTML = '<span>Total</span><span></span><span class="mm">6.6–7.8 mm</span>';
+  total.innerHTML = '<span>Total</span><span></span><span class="mm">7.0 mm</span>';
   root.appendChild(total);
 })();
 

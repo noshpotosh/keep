@@ -14,7 +14,7 @@ Follow the [ZMK new shield guide](https://zmk.dev/docs/development/hardware-inte
 | `Kconfig.shield` | `SHIELD_<NAME>_LEFT` / `SHIELD_<NAME>_RIGHT` |
 | `Kconfig.defconfig` | Keyboard name, `ZMK_SPLIT`, and the left side as `ZMK_SPLIT_ROLE_CENTRAL` |
 | `<name>.dtsi` | kscan (col2row matrix, row GPIOs), matrix transform for 36 keys, physical layout |
-| `<name>_left.overlay` / `<name>_right.overlay` | Per-side `col-gpios`, and `col-offset` on the right |
+| `<name>_left.overlay` / `<name>_right.overlay` | Per-side `col-gpios` and `row-gpios`, and `col-offset` on the right. The reversible PCB mirrors the XIAO pins on the right half, so its GPIO map differs |
 | `<name>-layouts.dtsi` | Physical layout for ZMK Studio |
 | `<name>.keymap` | Default keymap |
 | `<name>.zmk.yml` | Metadata |
@@ -32,9 +32,9 @@ CONFIG_ZMK_STUDIO=y                        # central side only
 ```
 
 ## 4. Keymap
-For 36 keys, start from a Miryoku-style or Callum-style layout with home-row mods and 3 thumb keys per side. Tweak it later in ZMK Studio without reflashing.
+For 36 keys, start from a Miryoku-style or Callum-style layout with home-row mods and 3 thumb keys per side. Tweak it later in ZMK Studio without reflashing. Put `&bootloader` and `&sys_reset` on a layer on **each** half, because the face-down XIAO's reset button is only reachable through the case pinhole.
 
 ## 5. Flash and test
-1. Double-tap reset on the XIAO to mount the UF2 drive, then copy the `.uf2` for that side.
+1. Enter the bootloader with the `&bootloader` key. On the first flash, or if the firmware is broken, double-tap the XIAO's reset button (through the case pinhole once it's assembled). Then copy that side's `.uf2` onto the drive.
 2. Before the case is done, short each row/col pair with tweezers to confirm every key.
 3. Flash `settings_reset` if pairing between the halves gets stuck.
